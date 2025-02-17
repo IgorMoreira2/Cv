@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model admin {
+  id         Int          @id @default(autoincrement())
+  nome       String       @db.VarChar(45)
+  email      String       @db.VarChar(55)
+  senha      String       @db.VarChar(9)
+  cultura    cultura[]
+  historia   historia[]
+  multimedia multimedia[]
+}
+
+model cultura {
+  id        Int     @id @default(autoincrement())
+  categoria String  @db.VarChar(45)
+  titulo    String  @db.VarChar(45)
+  descricao String  @db.Text
+  imagen    String? @db.VarChar(355)
+  admin_id  Int
+  admin     admin   @relation(fields: [admin_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cultura_admin1")
+
+  @@index([admin_id], map: "fk_cultura_admin1_idx")
+}
+
+model historia {
+  id        Int     @id @default(autoincrement())
+  titulo    String  @db.VarChar(45)
+  descricao String  @db.Text
+  ano       Int
+  imagen    String? @db.VarChar(255)
+  admin_id  Int
+  admin     admin   @relation(fields: [admin_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_historia_admin1")
+
+  @@index([admin_id], map: "fk_historia_admin1_idx")
+}
+
+model multimedia {
+  id        Int     @id @default(autoincrement())
+  ilha      String  @db.VarChar(45)
+  titulo    String  @db.VarChar(45)
+  descricao String  @db.Text
+  foto      String? @db.VarChar(255)
+  admin_id  Int
+  admin     admin   @relation(fields: [admin_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_multimedia_admin")
+
+  @@index([admin_id], map: "fk_multimedia_admin_idx")
+}
